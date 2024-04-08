@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<BehaviorTree>
+    <Selector>
+        <Sequence>
+            <Condition>avoid_obstacle</Condition>
+            <Action>change_color</Action>
+        </Sequence>
+        <Action>form_line</Action>
+    </Selector>
+</BehaviorTree>

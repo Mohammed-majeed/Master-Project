@@ -43,8 +43,8 @@
 <Sequence>
     <Selector>
         <Sequence>
-            <Condition>avoid_obstacle</Condition>
-            <Action>change_color</Action>
+            <Condition>obstacle_detected</Condition>
+            <Action>avoid_obstacle</Action>
         </Sequence>
         <Action>form_line</Action>
     </Selector>

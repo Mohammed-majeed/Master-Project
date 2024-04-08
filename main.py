@@ -19,113 +19,225 @@ class SwarmAgent(Agent):
     def update(self):
         self.root_node.run(self)
 
+
+    def nothing(self):
+        """
+        does nothing
+        """
+        pass
+    
     def obstacle(self):
-        # Check for obstacle intersections (this method is correct as-is)
+        """
+        Check for obstacle intersections
+        """
         for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
             return True
         return False
 
     def obstacle_detected(self):
-        # Implement logic to detect obstacles
+        """
+        Check if an obstacle is detected
+        """
         if self.obstacle():
             return True
         else:
             return False
 
     def avoid_obstacle(self):
-        # Implement obstacle avoidance (assuming this method needs no changes)
+        """
+        avoid obstacle
+        """
         return True
 
     def search_for_target(self):
+        """
+        Search for target
+        """
         if not self.target_detected_flag:
-            # self.wander()
-            # print('looking_for_target')
             return True
         else:
-            # self.move_to_position(self.target_pos)
             return False
         
-    def target_detected(self):        
+    def target_detected(self):
+        """
+        Check if the target is detected
+        """
         distance = math.dist(self.target_pos, self.pos)
         if distance <= 10:
-            # self.change_color()
             self.target_detected_flag = True
             return True
         return False
     
-
-    # def move_to_position(self, target_pos=[0,0]):
-    #     # Move towards the target position
-    #     direction = target_pos - self.pos
-    #     if direction.length() > 0:
-    #         direction.scale_to_length(self.config.movement_speed)
-    #         self.pos += direction
-    #     return True
-
-
     def target_reached(self):
+        """
+        Check if the target is reached
+        """
         if self.target_detected_flag:
             return True
         else:
             return False
 
-        # if self.target_detected_flag:
-        #     # print(self.on_site_id())
-        #     target_distance = self.pos.distance_to(self.target_pos)
-        #     if target_distance <= self.config.radius:
-        #         return True
-        # return False
-
     def change_color(self):
-        # player = self.in_proximity_accuracy().without_distance().filter_kind(SwarmAgent).first()
-        # if player is not None:
-        # if self.target_detected_flag:
+        """
+        Change color based on target detection
+        """
         self.change_image(1)  # Change to the second image (green)
         return True
-        # else:
-        #     self.change_image(0)  # Change to the first image (white)
-        #     return True
-
-
 
     def return_to_nest(self):
+        """
+        Return to the nest
+        """
         distance = math.dist(self.nest_pos, self.pos)
-        if distance <= 25:
+        if distance <= 15:
             self.state = "completed"
             self.freeze_movement()
             return True
         return False
 
     def looking_for_nest(self):
-        # print('looking_for_nest')
+        """
+        Look for the nest
+        """
         if self.target_detected_flag:
-            # return self.move_to_position(self.nest_pos)
-            # print('looking_for_nest = True')
             return True
         else:
             return False
-            # return True
 
     def wander(self):
+        """
+        Implement wandering behavior
+        """
         super().change_position()
         return True
 
-
     def path_clear(self):
+        """
+        Check if the path is clear of obstacles
+        """
         return not self.obstacle()
 
-
-
     def form_line(self):
-        # print('form_line')
-        # Simple line formation towards the center of the window
+        """
+        Form a line towards the center of the window
+        """
         center_x = self.config.window.width / 2
         direction = Vector2(center_x, self.pos.y) - self.pos
         if direction.length() > 0:
             direction.scale_to_length(self.config.movement_speed)
             self.pos += direction
-        # print("form_line")
         return True
+    
+    # def nothing(self):
+    #     pass
+
+    # def obstacle(self):
+    #     # Check for obstacle intersections (this method is correct as-is)
+    #     for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
+    #         return True
+    #     return False
+
+    # def obstacle_detected(self):
+    #     # Implement logic to detect obstacles
+    #     if self.obstacle():
+    #         return True
+    #     else:
+    #         return False
+
+    # def avoid_obstacle(self):
+    #     # Implement obstacle avoidance (assuming this method needs no changes)
+    #     return True
+
+    # def search_for_target(self):
+    #     if not self.target_detected_flag:
+    #         # self.wander()
+    #         # print('looking_for_target')
+    #         return True
+    #     else:
+    #         # self.move_to_position(self.target_pos)
+    #         return False
+        
+    # def target_detected(self):        
+    #     distance = math.dist(self.target_pos, self.pos)
+    #     if distance <= 10:
+    #         # self.change_color()
+    #         self.target_detected_flag = True
+    #         return True
+    #     return False
+    
+
+    # # def move_to_position(self, target_pos=[0,0]):
+    # #     # Move towards the target position
+    # #     direction = target_pos - self.pos
+    # #     if direction.length() > 0:
+    # #         direction.scale_to_length(self.config.movement_speed)
+    # #         self.pos += direction
+    # #     return True
+
+
+    # def target_reached(self):
+    #     if self.target_detected_flag:
+    #         return True
+    #     else:
+    #         return False
+
+    #     # if self.target_detected_flag:
+    #     #     # print(self.on_site_id())
+    #     #     target_distance = self.pos.distance_to(self.target_pos)
+    #     #     if target_distance <= self.config.radius:
+    #     #         return True
+    #     # return False
+
+    # def change_color(self):
+    #     # player = self.in_proximity_accuracy().without_distance().filter_kind(SwarmAgent).first()
+    #     # if player is not None:
+    #     # if self.target_detected_flag:
+    #     self.change_image(1)  # Change to the second image (green)
+    #     return True
+    #     # else:
+    #     #     self.change_image(0)  # Change to the first image (white)
+    #     #     return True
+
+
+
+    # def return_to_nest(self):
+    #     distance = math.dist(self.nest_pos, self.pos)
+    #     if distance <= 15:
+    #         self.state = "completed"
+    #         self.freeze_movement()
+    #         return True
+    #     return False
+
+    # def looking_for_nest(self):
+    #     # print('looking_for_nest')
+    #     if self.target_detected_flag:
+    #         # return self.move_to_position(self.nest_pos)
+    #         # print('looking_for_nest = True')
+    #         return True
+    #     else:
+    #         return False
+    #         # return True
+
+    # def wander(self):
+    #     super().change_position()
+    #     return True
+
+
+    # def path_clear(self):
+    #     return not self.obstacle()
+
+
+
+    # def form_line(self):
+    #     # print('form_line')
+    #     # Simple line formation towards the center of the window
+    #     center_x = self.config.window.width / 2
+    #     direction = Vector2(center_x, self.pos.y) - self.pos
+    #     if direction.length() > 0:
+    #         direction.scale_to_length(self.config.movement_speed)
+    #         self.pos += direction
+    #     # print("form_line")
+    #     return True
     
 
 # Remaining simulation setup and execution code...

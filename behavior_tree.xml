@@ -1,10 +1,33 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Sequence>
-                <Selector>
-                    <Sequence>
-                        <Condition>avoid_obstacle</Condition>
-                        <Action>change_color</Action>
-                    </Sequence>
-                    <Action>form_line</Action>
-                </Selector>
+    <Selector>
+        <Sequence>
+            <Condition>search_for_target</Condition>
+            <Sequence>
+                <Condition>path_clear</Condition>
+                <Action>target_detected</Action>
             </Sequence>
+        </Sequence>
+        <Sequence>
+            <Condition>obstacle_detected</Condition>
+            <Action>avoid_obstacle</Action>
+        </Sequence>
+        <Action>wander</Action>
+    </Selector>
+    <Selector>
+        <Sequence>
+            <Condition>target_reached</Condition>
+            <Action>change_color</Action>
+            <Selector>
+                <Sequence>
+                    <Condition>looking_for_nest</Condition>
+                    <Action>return_to_nest</Action>
+                </Sequence>
+                <Sequence>
+                    <Condition>obstacle_detected</Condition>
+                    <Action>avoid_obstacle</Action>
+                </Sequence>
+            </Selector>
+        </Sequence>
+        <Action>wander</Action>
+    </Selector>
+</Sequence>
