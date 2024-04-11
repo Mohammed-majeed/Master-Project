@@ -2,7 +2,7 @@ import pygame as pg
 from pygame.math import Vector2
 from vi import Agent, Simulation, Config, Window
 from BT_parser import parse_behavior_tree  # Make sure this correctly parses your BT.xml
-from LLAMA2_GGML import generate_BT
+from LLAMA_2 import main
 import math
 
 class SwarmAgent(Agent):
@@ -22,7 +22,7 @@ class SwarmAgent(Agent):
 
     def nothing(self):
         """
-        does nothing
+        Action node: does nothing
         """
         pass
     
@@ -35,8 +35,8 @@ class SwarmAgent(Agent):
         return False
 
     def obstacle_detected(self):
-        """
-        Check if an obstacle is detected
+        """form
+        Condition node: Check if an obstacle is detected
         """
         if self.obstacle():
             return True
@@ -45,13 +45,13 @@ class SwarmAgent(Agent):
 
     def avoid_obstacle(self):
         """
-        avoid obstacle
+        Action node: avoid obstacle
         """
         return True
 
     def search_for_target(self):
         """
-        Search for target
+        Action node: use this function to Search for target
         """
         if not self.target_detected_flag:
             return True
@@ -60,7 +60,7 @@ class SwarmAgent(Agent):
         
     def target_detected(self):
         """
-        Check if the target is detected
+        Condition node: Check if the target is detected
         """
         distance = math.dist(self.target_pos, self.pos)
         if distance <= 10:
@@ -70,7 +70,7 @@ class SwarmAgent(Agent):
     
     def target_reached(self):
         """
-        Check if the target is reached
+        Condition and/or Action node: Check if the target is reached
         """
         if self.target_detected_flag:
             return True
@@ -79,14 +79,14 @@ class SwarmAgent(Agent):
 
     def change_color(self):
         """
-        Change color based on target detection
+        Action node: Change color based on target detection
         """
         self.change_image(1)  # Change to the second image (green)
         return True
 
     def return_to_nest(self):
         """
-        Return to the nest
+        Action node: Return to the nest
         """
         distance = math.dist(self.nest_pos, self.pos)
         if distance <= 15:
@@ -97,7 +97,7 @@ class SwarmAgent(Agent):
 
     def looking_for_nest(self):
         """
-        Look for the nest
+        Action node: Look for the nest
         """
         if self.target_detected_flag:
             return True
@@ -106,20 +106,20 @@ class SwarmAgent(Agent):
 
     def wander(self):
         """
-        Implement wandering behavior
+        Action node: Implement wandering behavior
         """
         super().change_position()
         return True
 
     def path_clear(self):
         """
-        Check if the path is clear of obstacles
+        Condition node: Check if the path is clear of obstacles
         """
         return not self.obstacle()
 
     def form_line(self):
         """
-        Form a line towards the center of the window
+        Action node: Form a line towards the center of the window
         """
         center_x = self.config.window.width / 2
         direction = Vector2(center_x, self.pos.y) - self.pos
@@ -262,9 +262,9 @@ def load_images(image_paths):
     return [pg.image.load(path).convert_alpha() for path in image_paths]
 
 if __name__ == '__main__':
-    xml_path = "behavior_tree.xml"
-    # prompt = input('What behavior would you like to generate: ')
-    # generate_BT(prompt=prompt, file_name=xml_path)
+    xml_path = "behavior_tree_22.xml"
+    prompt = input('What behavior would you like to generate: ')
+    main(prompt=prompt, file_name=xml_path)
 
     config = Config(radius=50, visualise_chunks=True, window=Window.square(500))
     simulation = Simulation(config)
