@@ -166,7 +166,7 @@ class LlamaAssistant:
 
         # prompt_template = f'''
         # SYSTEM: As a helpful, respectful, and honest AI assistant, your main task is to create well-structured XML code for behavior trees according to the instructions provided.
-        # INSTRUCTIONS: You're given examples of behavior tree structures, like:\n{BT_example} \nor\n {BT_example_1}\n \nNote that while these examples can guide you, feel free to devise different structures as needed. Your objective is to use the following available behaviors: {", ".join(request.behaviors)}, to craft a behavior tree in XML format. This tree should cater to simulated swarm robots based on the user's command below.
+        # INSTRUCTIONS: You're given examples of behavior tree structures, like:\n{BT_example} \n or \n {BT_example_1}\n \nNote that while these examples can guide you, feel free to devise different structures as needed. Your objective is to use the following available behaviors: {", ".join(request.behaviors)}, to craft a behavior tree in XML format. This tree should cater to simulated swarm robots based on the user's command below.
         # USER COMMAND: "{request.prompt}"
         # ASSISTANT RESPONSE:
         # '''

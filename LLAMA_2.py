@@ -4,7 +4,8 @@ import xml.etree.ElementTree as ET
 
 class BehaviorTreeGenerator:
     def __init__(self, model_id, 
-                 model_file, model_type, 
+                 model_file, 
+                 model_type, 
                  context_length,
                  gpu_layers,
                  temperature,
@@ -26,6 +27,8 @@ class BehaviorTreeGenerator:
             )
 
     def generate_behavior_tree(self, prompt, fix_mistake):
+
+        
         # BT_1 = """
         # <BehaviorTree>
         #     <Sequence>
@@ -95,52 +98,32 @@ class BehaviorTreeGenerator:
             <Sequence>
                 <Selector>
                     <Sequence>
-                        <Condition>target_detected</Condition>
-                        <Sequence>
-                            <Condition>path_clear</Condition>
-                            <Action>target_reached</Action>
-                        </Sequence>
-                        <!-- If path to target is not clear, avoid obstacles -->
-                        <Sequence>
-                            <Condition>path_clear</Condition>
-                            <Action>avoid_obstacle</Action>
-                        </Sequence>
+                        <Condition>is_line_formed</Condition>
+                        <Action>change_color_to_green</Action>
+                        <Action>agent_movement_freeze</Action>
+                        <Action>task_completed</Action>
                     </Sequence>
-                    <!-- If no target is detected, explore -->
-                    <Action>wander</Action>
-                </Selector>
-                <!-- Once the target is found, return to the nest -->
-                <Selector>
-                    <Sequence>
-                        <Condition>target_reached</Condition>
-                        <Selector>
-                            <!-- Check if path to nest is clear -->
-                            <Sequence>
-                                <Condition>looking_for_nest</Condition>
-                                <Action>return_to_nest</Action>
-                            </Sequence>
-                            <!-- If path to nest is not clear, avoid obstacles -->
-                            <Sequence>
-                                <Condition>path_clear</Condition>
-                                <Action>avoid_obstacle</Action>
-                            </Sequence>
-                        </Selector>
-                    </Sequence>
-                    <!-- If target not yet reached, continue current behavior (handled in the first Selector) -->
-                    <Action>wander</Action>
+                    <Action>form_line</Action>
                 </Selector>
             </Sequence>
         </BehaviorTree>
-            """
+                """
         BT_2 = """
         <BehaviorTree>
-            <Selector>
+            <Sequence>
+                <Selector>
+                    <Sequence>
+                        <Condition>is_target_detected</Condition>
+                        <Action>change_color_to_green</Action>
+                        <Action>task_completed</Action>
+                    </Sequence>
+                    <Action>wander</Action>
+                </Selector>                
                 <Sequence>
-                    <Condition>obstacle_detected</Condition>
-                    <Action>avoid_obstacle</Action>
+                    <Condition>is_agent_in_nest</Condition>
+                    <Action>change_color_to_white</Action>
                 </Sequence>
-                <Action>form_line</Action>
-            </Selector>
+            </Sequence>
         </BehaviorTree>
             """
         
@@ -148,37 +131,23 @@ class BehaviorTreeGenerator:
         tow_shut_learning = f'''<<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
         <s> [INST] 
         INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
-        USER COMMAND: generate behavior tree to " find the target then back to the home ".[/INST]
+        USER COMMAND: generate behavior tree to "Form a line, change color to green, and then freeze movement."[/INST]
         RESPONSE: {BT_1}
         </s>
 
         <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
         <s> [INST]
         INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
-        USER COMMAND: generate behavior tree to " avoid obstical and form line ".[/INST]
+        USER COMMAND: generate behavior tree to "Find food and change color to green, then return to the nest, change color to white."[/INST]
         RESPONSE: {BT_2}
         </s>
         '''
 
 
-        # ex_1= "find the target then back to the home"
 
-        # read_examples= f"""
-        # <s>[INST] generate a behavior tree to find the target then back to the home [/INST]
-        # RESPONSE: {BT_1}</s>
-        # <s>[/INST] generate a behavior tree to avoid obstical and form line [/INST]
-        # RESPONSE: {BT_2}</s>
-        # """
-
-        # prompt_template = f"""
-        # {read_examples}
-        # Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format.
-        # User command: "{prompt}"  
-        # RESPONSE 1: {fix_mistake}
-        # """
-
-
-        prompt_template = f'''{tow_shut_learning}
+        prompt_template = f'''
+        
+        {tow_shut_learning}
         <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
         <s> [INST]
         INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
@@ -192,14 +161,18 @@ class BehaviorTreeGenerator:
         response = self.llm(prompt_template)
         print("###### response #######")
         print(response)
+
+        
         behavior_tree = self.extract_behavior_tree(prompt, response)
         return behavior_tree
         
 
     @staticmethod
-    def call_behaviors():        
+    def call_behaviors():
+
         from main import SwarmAgent
         class_obj = SwarmAgent
+
         function_names_and_docstrings = {}
         for func_name in dir(class_obj):
             if callable(getattr(class_obj, func_name)) and not func_name.startswith("__")\
@@ -243,11 +216,30 @@ def save_behavior_tree_xml(data: str, file_path: str):
 
 def main(prompt, file_name):
     config = {
-        "model_id": "TheBloke/Llama-2-7b-Chat-GGUF",
-        # "model_file": "/home/mohammed/Desktop/llama-2-7b-chat.Q8_0.gguf",
-        "model_file": "/home/mohammed/Desktop/llama-2-7b-chat-codeCherryPop.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Orca-2-7B-GGUF",
+        # "model_file":"/home/mohammed/Desktop/orca-2-7b.Q4_K_M.gguf",
+
+        "model_id": "TheBloke/WestLake-7B-v2-GGUF",
+        "model_file":"/home/mohammed/Desktop/models/westlake-7b-v2.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
+        # "model_file": "/home/mohammed/Desktop/mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Llama-2-7B-32K-Instruct-GGUF",
+        # "model_file":"/media/mohammed/AA5EEBF25EEBB4EB/llama-2-7b-32k-instruct.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Llama-2-7b-Chat-GGUF",
+        # "model_file": "/media/mohammed/AA5EEBF25EEBB4EB/llama-2-7b-chat.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Llama-2-13B-GGUF",
+        # "model_file": "/media/mohammed/AA5EEBF25EEBB4EB/llama-2-13b.Q4_K_M.gguf",
+
+        # "model_id": "TheBloke/Llama-2-13B-chat-GGUF",        
+        # "model_file": "/media/mohammed/AA5EEBF25EEBB4EB/llama-2-13b-chat.Q4_K_M.gguf",
+        
         "model_type": "llama",
-        "context_length": 2048,
+        "context_length": (1024*4),
         "gpu_layers": 4,
         "temperature": 0.0,
         "top_p": 0.95,
@@ -259,6 +251,11 @@ def main(prompt, file_name):
     behavior_tree = behavior_tree_generator.generate_behavior_tree(prompt=prompt, fix_mistake=fix_mistake)
     save_behavior_tree_xml(behavior_tree, file_name)
 
+
+
+
+
+
 if __name__ == "__main__":
-    prompt = "change color"
-    main(prompt, file_name="behavior_tree_1.xml")
+    prompt = "Find food and change color to green, then return to the nest, change color to white, and freeze movement."
+    main(prompt, file_name="new_behaviors.xml")

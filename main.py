@@ -1,9 +1,11 @@
 import pygame as pg
 from pygame.math import Vector2
 from vi import Agent, Simulation, Config, Window
-from BT_parser import parse_behavior_tree  # Make sure this correctly parses your BT.xml
+from BT_parser import parse_behavior_tree
 from LLAMA_2 import main
 import math
+
+
 
 class SwarmAgent(Agent):
     def __init__(self, images, simulation, pos, nest_pos, target_pos):
@@ -19,24 +21,24 @@ class SwarmAgent(Agent):
     def update(self):
         self.root_node.run(self)
 
-
-    def nothing(self):
-        """
-        Action node: does nothing
-        """
-        pass
     
     def obstacle(self):
         """
-        Check for obstacle intersections
+        Check for obstacle intersections within a predefined radius.
+        
+        Returns:
+            bool: True if an obstacle is detected within the radius, False otherwise.
         """
         for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
             return True
         return False
 
-    def obstacle_detected(self):
-        """form
-        Condition node: Check if an obstacle is detected
+    def is_obstacle_detected(self):
+        """
+        Determine if any obstacles are detected in the vicinity of the agent.
+        
+        Returns:
+            bool: True if an obstacle is detected, False otherwise.
         """
         if self.obstacle():
             return True
@@ -45,202 +47,157 @@ class SwarmAgent(Agent):
 
     def avoid_obstacle(self):
         """
-        Action node: avoid obstacle
+        Execute an action to avoid detected obstacles. This function should include
+        the logic to change the agent's path or position.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
         """
         return True
 
-    def search_for_target(self):
+
+    def is_target_detected(self):
         """
-        Action node: use this function to Search for target
-        """
-        if not self.target_detected_flag:
-            return True
-        else:
-            return False
+        Check if the target is within a detectable distance from the agent's position.
         
-    def target_detected(self):
-        """
-        Condition node: Check if the target is detected
+        Returns:
+            bool: True if the target is within 20 units of distance, False otherwise.
         """
         distance = math.dist(self.target_pos, self.pos)
-        if distance <= 10:
-            self.target_detected_flag = True
+        if distance <= 20:
+            # self.target_detected_flag = True
             return True
         return False
     
-    def target_reached(self):
+    def is_target_reached(self):
         """
-        Condition and/or Action node: Check if the target is reached
+        Check if the agent has reached the target based on a predefined proximity threshold.
+        
+        Returns:
+            bool: True if the target is within 15 units of distance and the target detected flag is set, False otherwise.
         """
-        if self.target_detected_flag:
+        distance = math.dist(self.target_pos, self.pos)
+        if distance <= 15:
+            self.target_detected_flag = True
+        
+        if self.target_detected_flag:            
             return True
-        else:
-            return False
+        return False
+        
 
-    def change_color(self):
+    def change_color_to_green(self):
         """
-        Action node: Change color based on target detection
+        Change the agent's color to green, usually indicating a successful operation or state.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
         """
-        self.change_image(1)  # Change to the second image (green)
+        self.change_image(1)
         return True
-
-    def return_to_nest(self):
+    
+    def change_color_to_white(self):
         """
-        Action node: Return to the nest
+        Change the agent's color to white, usually indicating a neutral or initial state.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
+        """
+        self.change_image(0)  
+        return True
+    
+
+    def is_agent_in_nest(self):
+        """
+        Determine if the agent is within a predefined proximity to its nest.
+        
+        Returns:
+            bool: True if the agent is within 17 units of the nest, False otherwise.
         """
         distance = math.dist(self.nest_pos, self.pos)
-        if distance <= 15:
-            self.state = "completed"
-            self.freeze_movement()
+        if distance <= 17 and self.state == "completed":
+            # self.state = "completed"
+            # # self.freeze_movement()
             return True
         return False
 
-    def looking_for_nest(self):
+
+    def agent_movement_freeze(self):
         """
-        Action node: Look for the nest
+        Freeze the agent's movement, typically to indicate a stop in activity or end of tasks.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
         """
-        if self.target_detected_flag:
-            return True
-        else:
-            return False
+        self.freeze_movement()
+        return True
+    
+    def continue_movement_agent(self):
+        """
+        Continue the agent's movement after it has been previously frozen.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
+        """
+        self.continue_movement()
+        return True
 
     def wander(self):
         """
-        Action node: Implement wandering behavior
+        Perform a wandering action where the agent moves randomly within the environment.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
         """
         super().change_position()
         return True
 
-    def path_clear(self):
+    def is_path_clear(self):
         """
-        Condition node: Check if the path is clear of obstacles
+        Check if the path ahead of the agent is clear of obstacles.
+        
+        Returns:
+            bool: True if no obstacles are detected ahead, False if obstacles are present.
         """
         return not self.obstacle()
-
-    def form_line(self):
+    
+    def is_line_formed(self):
         """
-        Action node: Form a line towards the center of the window
+        Determine if the agent has formed a line with a reference point at the center of the window.
+        
+        Returns:
+            bool: True if the line is formed with the center, False otherwise.
         """
         center_x = self.config.window.width / 2
         direction = Vector2(center_x, self.pos.y) - self.pos
-        if direction.length() > 0:
+        if direction.length() > 0.5:
+            return False        
+        return True
+
+    def form_line(self):
+        """
+        Direct the agent to form a line towards the center of the window. This function adjusts
+        the agent's position to align it with the center.
+        
+        Returns:
+            bool: Always returns True, indicating the action was executed.
+        """
+        center_x = self.config.window.width / 2
+        direction = Vector2(center_x, self.pos.y) - self.pos
+        if direction.length() > 0.5:
             direction.scale_to_length(self.config.movement_speed)
-            self.pos += direction
+            self.pos += direction     
         return True
     
-    # def nothing(self):
-    #     pass
-
-    # def obstacle(self):
-    #     # Check for obstacle intersections (this method is correct as-is)
-    #     for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
-    #         return True
-    #     return False
-
-    # def obstacle_detected(self):
-    #     # Implement logic to detect obstacles
-    #     if self.obstacle():
-    #         return True
-    #     else:
-    #         return False
-
-    # def avoid_obstacle(self):
-    #     # Implement obstacle avoidance (assuming this method needs no changes)
-    #     return True
-
-    # def search_for_target(self):
-    #     if not self.target_detected_flag:
-    #         # self.wander()
-    #         # print('looking_for_target')
-    #         return True
-    #     else:
-    #         # self.move_to_position(self.target_pos)
-    #         return False
+    def task_completed(self):
+        """
+        Signal that the agent has completed its designated task by freezing movement and updating state.
         
-    # def target_detected(self):        
-    #     distance = math.dist(self.target_pos, self.pos)
-    #     if distance <= 10:
-    #         # self.change_color()
-    #         self.target_detected_flag = True
-    #         return True
-    #     return False
+        Returns:
+            bool: Always returns True, indicating that the task completion action was executed.
+        """
+        self.state = "completed"
+        return True
     
-
-    # # def move_to_position(self, target_pos=[0,0]):
-    # #     # Move towards the target position
-    # #     direction = target_pos - self.pos
-    # #     if direction.length() > 0:
-    # #         direction.scale_to_length(self.config.movement_speed)
-    # #         self.pos += direction
-    # #     return True
-
-
-    # def target_reached(self):
-    #     if self.target_detected_flag:
-    #         return True
-    #     else:
-    #         return False
-
-    #     # if self.target_detected_flag:
-    #     #     # print(self.on_site_id())
-    #     #     target_distance = self.pos.distance_to(self.target_pos)
-    #     #     if target_distance <= self.config.radius:
-    #     #         return True
-    #     # return False
-
-    # def change_color(self):
-    #     # player = self.in_proximity_accuracy().without_distance().filter_kind(SwarmAgent).first()
-    #     # if player is not None:
-    #     # if self.target_detected_flag:
-    #     self.change_image(1)  # Change to the second image (green)
-    #     return True
-    #     # else:
-    #     #     self.change_image(0)  # Change to the first image (white)
-    #     #     return True
-
-
-
-    # def return_to_nest(self):
-    #     distance = math.dist(self.nest_pos, self.pos)
-    #     if distance <= 15:
-    #         self.state = "completed"
-    #         self.freeze_movement()
-    #         return True
-    #     return False
-
-    # def looking_for_nest(self):
-    #     # print('looking_for_nest')
-    #     if self.target_detected_flag:
-    #         # return self.move_to_position(self.nest_pos)
-    #         # print('looking_for_nest = True')
-    #         return True
-    #     else:
-    #         return False
-    #         # return True
-
-    # def wander(self):
-    #     super().change_position()
-    #     return True
-
-
-    # def path_clear(self):
-    #     return not self.obstacle()
-
-
-
-    # def form_line(self):
-    #     # print('form_line')
-    #     # Simple line formation towards the center of the window
-    #     center_x = self.config.window.width / 2
-    #     direction = Vector2(center_x, self.pos.y) - self.pos
-    #     if direction.length() > 0:
-    #         direction.scale_to_length(self.config.movement_speed)
-    #         self.pos += direction
-    #     # print("form_line")
-    #     return True
-    
-
-# Remaining simulation setup and execution code...
 
 def draw_obstacle():
     x = 350
@@ -262,9 +219,9 @@ def load_images(image_paths):
     return [pg.image.load(path).convert_alpha() for path in image_paths]
 
 if __name__ == '__main__':
-    xml_path = "behavior_tree_22.xml"
-    prompt = input('What behavior would you like to generate: ')
-    main(prompt=prompt, file_name=xml_path)
+    xml_path = "behavior_tree_2.xml"
+    # prompt = input('What behavior would you like to generate: ')
+    # main(prompt=prompt, file_name=xml_path)
 
     config = Config(radius=50, visualise_chunks=True, window=Window.square(500))
     simulation = Simulation(config)
@@ -293,3 +250,250 @@ if __name__ == '__main__':
     nest()
 
     simulation.run()
+
+
+
+
+
+
+
+
+# class SwarmAgent(Agent):
+#     def __init__(self, images, simulation, pos, nest_pos, target_pos):
+#         super().__init__(images=images, simulation=simulation)
+#         self.root_node = parse_behavior_tree(xml_path)  # Adjust the path if necessary
+#         self.pos = pos
+#         self.nest_pos = nest_pos
+#         self.target_pos = target_pos  # Directly use the passed target position
+#         self.target_detected_flag = False
+#         self.obstacle_radius = 5
+#         self.state = "seeking"
+
+#     def update(self):
+#         self.root_node.run(self)
+
+    
+#     def obstacle(self):
+#         """
+#         Check for obstacle intersections
+#         """
+#         for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
+#             return True
+#         return False
+
+#     def is_obstacle_detected(self):
+#         """
+#         Condition node: Check if an obstacle is detected
+#         """
+#         if self.obstacle():
+#             return True
+#         else:
+#             return False
+
+#     def avoid_obstacle(self):
+#         """
+#         Action node: avoid the obstacle
+#         """
+#         return True
+
+#     # def find_target(self):
+#     #     """
+#     #     Action node: use this function to Search for gool
+#     #     """
+#     #     self.wander()
+#     #     return True
+#         # if not self.target_detected_flag:
+#         #     return True
+#         # else:
+#         #     return False
+        
+#     def is_target_detected(self):
+#         """
+#         Condition node: Check if the target is detected
+#         """
+#         distance = math.dist(self.target_pos, self.pos)
+#         if distance <= 20:
+#             # self.target_detected_flag = True
+#             return True
+#         return False
+    
+#     def is_target_reached(self):
+#         """
+#         Condition node: Check if the target is reached
+#         """
+#         distance = math.dist(self.target_pos, self.pos)
+#         if distance <= 15:
+#             self.target_detected_flag = True
+        
+#         if self.target_detected_flag:            
+#             return True
+#         return False
+        
+#         #     return True
+#         # return False
+    
+#     # def target_already_reached(self):
+#     #     """
+#     #     Condition node: Check if the target is reached
+#     #     """
+#     #     if self.target_detected_flag:            
+#     #         return True
+#     #     return False
+    
+#         # if self.target_detected_flag:
+#         #     return True
+#         # else:
+#         #     return False
+
+#     def change_color_to_green(self):
+#         """
+#         Action node: Change color to green
+#         """
+#         self.change_image(1)
+#         return True
+    
+#     def change_color_to_white(self):
+#         """
+#         Action node: Change color to white
+#         """
+#         self.change_image(0)  
+#         return True
+    
+#     # def looking_for_nest(self):
+#     #     """
+#     #     Action node: Look for the nest
+#     #     """
+#     #     return self.wander()
+    
+#     def is_agent_in_nest(self):
+#         """
+#         Condition node: check if the agent is in the nest 
+#         """
+#         distance = math.dist(self.nest_pos, self.pos)
+#         if distance <= 17:
+#             # self.state = "completed"
+#             # # self.freeze_movement()
+#             return True
+#         return False
+
+#     # def agent_in_nest(self):
+#     #     """
+#     #     Action node: Return to the nest
+#     #     """
+#     #     distance = math.dist(self.nest_pos, self.pos)
+#     #     if distance <= 18:
+#     #         # self.state = "completed"
+#     #         # self.freeze_movement()
+#     #         return True
+#     #     # return False
+    
+#     def agent_movement_freeze(self):
+#         """
+#         Action node: freeze the movement of the agent
+#         """
+#         self.freeze_movement()
+#         return True
+    
+#     def continue_movement_agent(self):
+#         """
+#         Action node: Continue the movement of the agent after freeze
+#         """
+#         self.continue_movement()
+#         return True
+
+
+    
+#         # """
+#         # Action node: Look for the nest if target reached
+#         # """
+#         # if self.target_detected_flag:
+#         #     return True
+#         # else:
+#         #     return False
+
+#     def wander(self):
+#         """
+#         Action node: wander around
+#         """
+#         super().change_position()
+#         return True
+
+#     def is_path_clear(self):
+#         """
+#         Condition node: Check if the path is clear of obstacles
+#         """
+#         return not self.obstacle()
+    
+#     def is_line_formed(self):
+#         """
+#         Condition node: check if the line is formed 
+#         """
+#         center_x = self.config.window.width / 2
+#         direction = Vector2(center_x, self.pos.y) - self.pos
+#         if direction.length() > 0.5:
+#             return False        
+#         return True
+
+#     def form_line(self):
+#         """
+#         Action node: Form a line towards the center of the window
+#         """
+#         center_x = self.config.window.width / 2
+#         direction = Vector2(center_x, self.pos.y) - self.pos
+#         if direction.length() > 0.5:
+#             direction.scale_to_length(self.config.movement_speed)
+#             self.pos += direction     
+#         return True
+    
+
+# def draw_obstacle():
+#     x = 350
+#     y = 100
+#     simulation.spawn_obstacle("examples/images/rect_obst.png", x, y)
+#     simulation.spawn_obstacle("examples/images/rect_obst (1).png", y, x)
+
+# def draw_target(simulation):
+#     x = target_x
+#     y = target_y
+#     simulation.spawn_site("examples/images/rect.png", x, y)
+
+# def nest():
+#     x = nest_x
+#     y = nest_y
+#     simulation.spawn_site("examples/images/nest.png", x, y)
+
+# def load_images(image_paths):
+#     return [pg.image.load(path).convert_alpha() for path in image_paths]
+
+# if __name__ == '__main__':
+#     xml_path = "behavior_tree_2.xml"
+#     # prompt = input('What behavior would you like to generate: ')
+#     # main(prompt=prompt, file_name=xml_path)
+
+#     config = Config(radius=50, visualise_chunks=True, window=Window.square(500))
+#     simulation = Simulation(config)
+
+#     # Nest position as a Vector2 object
+#     nest_x, nest_y = 450, 400  # Define the nest's position
+#     nest_pos = Vector2(nest_x, nest_y)
+
+#     # Define the target's position
+#     target_x, target_y = 200, 100
+#     target_pos = Vector2(target_x, target_y)
+
+#     # Ensure this path is correct and load images
+#     agent_images_paths = ["examples/images/white.png", "examples/images/green.png"]
+#     loaded_agent_images = load_images(agent_images_paths)  # Load images into Pygame surfaces
+
+#     # Initialize agents with loaded images and a starting position
+#     for _ in range(50):
+#         agent = SwarmAgent(images=loaded_agent_images, simulation=simulation, pos=Vector2(nest_x, nest_y),
+#                            nest_pos=nest_pos, target_pos=target_pos)
+#         simulation._agents.add(agent)
+#         simulation._all.add(agent)
+
+#     draw_obstacle()
+#     draw_target(simulation)
+#     nest()
+
+#     simulation.run()
