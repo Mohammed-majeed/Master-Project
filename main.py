@@ -4,30 +4,33 @@ from vi import Agent, Simulation, Config, Window
 from BT_parser import parse_behavior_tree
 from LLAMA_2 import main
 import math
+import gc
+import torch
 
 
 
 class SwarmAgent(Agent):
     def __init__(self, images, simulation, pos, nest_pos, target_pos):
         super().__init__(images=images, simulation=simulation)
-        self.root_node = parse_behavior_tree(xml_path)  # Adjust the path if necessary
+        self.root_node = parse_behavior_tree(xml_path)  
         self.pos = pos
         self.nest_pos = nest_pos
-        self.target_pos = target_pos  # Directly use the passed target position
+        self.target_pos = target_pos  
         self.target_detected_flag = False
+        self.target_reached_flag = False
         self.obstacle_radius = 5
         self.state = "seeking"
 
     def update(self):
         self.root_node.run(self)
 
-    
+
+ 
     def obstacle(self):
         """
         Check for obstacle intersections within a predefined radius.
         
-        Returns:
-            bool: True if an obstacle is detected within the radius, False otherwise.
+        Returns: True if an obstacle is detected within the radius, False otherwise.
         """
         for intersection in self.obstacle_intersections(scale=self.obstacle_radius):
             return True
@@ -35,10 +38,8 @@ class SwarmAgent(Agent):
 
     def is_obstacle_detected(self):
         """
-        Determine if any obstacles are detected in the vicinity of the agent.
-        
-        Returns:
-            bool: True if an obstacle is detected, False otherwise.
+        Condition node: Determine if any obstacles are detected in the vicinity of the agent.
+        Returns: True if an obstacle is detected, False otherwise.
         """
         if self.obstacle():
             return True
@@ -47,60 +48,50 @@ class SwarmAgent(Agent):
 
     def avoid_obstacle(self):
         """
-        Execute an action to avoid detected obstacles. This function should include
-        the logic to change the agent's path or position.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Execute an action to avoid detected obstacles.
+        Returns: Always returns True, indicating the action was executed.
         """
         return True
 
 
     def is_target_detected(self):
         """
-        Check if the target is within a detectable distance from the agent's position.
-        
-        Returns:
-            bool: True if the target is within 20 units of distance, False otherwise.
+        Action node: Check if the target is within a detectable distance from the agent's position.
+        Returns: True if the target is within 20 units of distance, False otherwise.
         """
         distance = math.dist(self.target_pos, self.pos)
         if distance <= 20:
-            # self.target_detected_flag = True
+            self.target_detected_flag = True        
+        if self.target_detected_flag:            
             return True
         return False
+        
     
     def is_target_reached(self):
         """
-        Check if the agent has reached the target based on a predefined proximity threshold.
-        
-        Returns:
-            bool: True if the target is within 15 units of distance and the target detected flag is set, False otherwise.
+        Condition node: Check if the agent has reached the target.
+        Returns: True if the target is within 15 units of distance, False otherwise.
         """
         distance = math.dist(self.target_pos, self.pos)
         if distance <= 15:
-            self.target_detected_flag = True
-        
-        if self.target_detected_flag:            
+            self.target_reached_flag = True        
+        if self.target_reached_flag:            
             return True
         return False
         
 
     def change_color_to_green(self):
         """
-        Change the agent's color to green, usually indicating a successful operation or state.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Change the agent's color to green, usually indicating a successful operation or state.
+        Returns: Always returns True, indicating the action was executed.
         """
         self.change_image(1)
         return True
     
     def change_color_to_white(self):
         """
-        Change the agent's color to white, usually indicating a neutral or initial state.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Change the agent's color to white, usually indicating a neutral or initial state.
+        Returns: Always returns True, indicating the action was executed.
         """
         self.change_image(0)  
         return True
@@ -108,64 +99,55 @@ class SwarmAgent(Agent):
 
     def is_agent_in_nest(self):
         """
-        Determine if the agent is within a predefined proximity to its nest.
-        
-        Returns:
-            bool: True if the agent is within 17 units of the nest, False otherwise.
+        Condition node: Determine if the agent is in the nest.
+        Returns: True if the agent is in the nest, False otherwise.
         """
         distance = math.dist(self.nest_pos, self.pos)
         if distance <= 17 and self.state == "completed":
             # self.state = "completed"
             # # self.freeze_movement()
+            self.state = "seeking"
+            self.target_detected_flag = False
+            self.target_reached_flag = False
             return True
         return False
 
 
     def agent_movement_freeze(self):
         """
-        Freeze the agent's movement, typically to indicate a stop in activity or end of tasks.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Freeze the agent's movement, typically to indicate a stop in activity or end of tasks.
+        Returns: Always returns True, indicating the action was executed.
         """
         self.freeze_movement()
         return True
     
     def continue_movement_agent(self):
         """
-        Continue the agent's movement after it has been previously frozen.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Continue the agent's movement after it has been previously frozen.
+        Returns: Always returns True, indicating the action was executed.
         """
         self.continue_movement()
         return True
 
     def wander(self):
         """
-        Perform a wandering action where the agent moves randomly within the environment.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Perform a wandering action where the agent moves randomly within the environment.
+        Returns: Always returns True, indicating the action was executed.
         """
         super().change_position()
         return True
 
     def is_path_clear(self):
         """
-        Check if the path ahead of the agent is clear of obstacles.
-        
-        Returns:
-            bool: True if no obstacles are detected ahead, False if obstacles are present.
+        Condition node: Check if the path ahead of the agent is clear of obstacles.
+        Returns: True if no obstacles are detected ahead, False if obstacles are present.
         """
         return not self.obstacle()
     
     def is_line_formed(self):
         """
-        Determine if the agent has formed a line with a reference point at the center of the window.
-        
-        Returns:
-            bool: True if the line is formed with the center, False otherwise.
+        Condition node: Determine if the agent has formed a line with a reference point at the center of the window.
+        Returns: True if the line is formed with the center, False otherwise.
         """
         center_x = self.config.window.width / 2
         direction = Vector2(center_x, self.pos.y) - self.pos
@@ -175,11 +157,8 @@ class SwarmAgent(Agent):
 
     def form_line(self):
         """
-        Direct the agent to form a line towards the center of the window. This function adjusts
-        the agent's position to align it with the center.
-        
-        Returns:
-            bool: Always returns True, indicating the action was executed.
+        Action node: Direct the agent to form a line towards the center of the window. This function adjuststhe agent's position to align it with the center.
+        Returns: Always returns True, indicating the action was executed.
         """
         center_x = self.config.window.width / 2
         direction = Vector2(center_x, self.pos.y) - self.pos
@@ -190,10 +169,8 @@ class SwarmAgent(Agent):
     
     def task_completed(self):
         """
-        Signal that the agent has completed its designated task by freezing movement and updating state.
-        
-        Returns:
-            bool: Always returns True, indicating that the task completion action was executed.
+        Action node: Signal that the agent has completed its designated task by freezing movement and updating state.
+        Returns: Always returns True, indicating that the task completion action was executed.
         """
         self.state = "completed"
         return True
@@ -219,7 +196,12 @@ def load_images(image_paths):
     return [pg.image.load(path).convert_alpha() for path in image_paths]
 
 if __name__ == '__main__':
-    xml_path = "behavior_tree_2.xml"
+
+    gc.collect()
+
+    torch.cuda.empty_cache()
+
+    xml_path = "behavior_tree.xml"
     # prompt = input('What behavior would you like to generate: ')
     # main(prompt=prompt, file_name=xml_path)
 

@@ -61,6 +61,8 @@ def parse_node(node):
     if node_type == "condition":
         condition_name = node.text.strip()
         return ConditionNode(condition_name)
+    elif node_type == "behaviortree":
+        pass
     elif node_type == "action":
         action_name = node.text.strip()
         return ActionNode(action_name)

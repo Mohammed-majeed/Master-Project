@@ -90,16 +90,28 @@ class BehaviorTreeGenerator:
         # USER COMMAND: "{prompt}"
         # ASSISTANT RESPONSE: {fix_mistake}
         # '''
-        prompt_template_1 = f'''
-        SYSTEM: As a helpful, respectful, and honest AI assistant, your main task is to create well-structured XML behavior trees according to the instructions provided.
-        INSTRUCTIONS: HYou're given examples of behavior tree structures, like:
+        # prompt_template_1 = f'''
+        # SYSTEM: As a helpful, respectful, and honest AI assistant, your main task is to create well-structured XML behavior trees according to the instructions provided.
+        # INSTRUCTIONS: You're given examples of behavior tree structures, like:
+        # 1. Example 1:
+        # {BT_1}
+        # 2. Example 2:
+        # {BT_2}
+        # Note that while these examples can guide you, feel free to devise different structures as needed. Your objective is to use the following available behaviors: {self.call_behaviors()}, to craft a behavior tree in XML format. This tree should cater to simulated swarm robots based on the user's command below.
+        # USER COMMAND: generate behavior tree to "{prompt}". Output only the XML behavior tree without extra text.[/INST]
+        # RESPONSE: {fix_mistake}
+        # '''
+
+        xml_examples = f'''
+        <<SYS>> SYSTEM: You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST] INSTRUCTIONS: You're given examples of behavior tree structures, like:
         1. Example 1:
         {BT_1}
         2. Example 2:
         {BT_2}
         Note that while these examples can guide you, feel free to devise different structures as needed. Your objective is to use the following available behaviors: {self.call_behaviors()}, to craft a behavior tree in XML format. This tree should cater to simulated swarm robots based on the user's command below.
-        USER COMMAND: "{prompt}"
-        ASSISTANT RESPONSE: {fix_mistake}
+        USER COMMAND: generate behavior tree to "{prompt}". Output only the XML behavior tree without extra text.[/INST]
+        RESPONSE: {fix_mistake}
         '''
 
 
@@ -138,36 +150,68 @@ class BehaviorTreeGenerator:
             """
         
 
-        tow_shut_learning = f'''<<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
-        <s> [INST] 
-        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
+   
+        
+        two_examples = f'''
+        <s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST] 
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
         USER COMMAND: generate behavior tree to "Form a line, change color to green, and then freeze movement."[/INST]
         RESPONSE: {BT_3}
         </s>
 
-        <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
-        <s> [INST]
-        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
+        <s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST]
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
         USER COMMAND: generate behavior tree to "Find food and change color to green, then return to the nest, change color to white."[/INST]
         RESPONSE: {BT_4}
         </s>
         '''
 
-
-
-        prompt_template_2 = f'''        
-        {tow_shut_learning}
-        <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
-        <s> [INST]
-        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format like the exampels to the following command.
-        USER COMMAND: generate behavior tree to "{prompt}".[/INST]
+        two_shot_learning = f'''        
+        {two_examples}
+        <s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST]
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
+        USER COMMAND: generate behavior tree to "{prompt}". Output only the XML behavior tree without extra text.[/INST]
         RESPONSE: {fix_mistake}
         '''
 
-        if first_or_second_prompt_tamplet =="1":
-            prompt_template = prompt_template_1
-        else:
-            prompt_template = prompt_template_2
+        one_example = f'''<s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST]
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
+        USER COMMAND: generate behavior tree to "Find food and change color to green, then return to the nest, change color to white."[/INST]
+        RESPONSE: {BT_4}
+        </s>
+        '''
+
+        one_shot_learning = f'''        
+        {one_example}
+        <s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST]
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
+        USER COMMAND: generate behavior tree to "{prompt}". Output only the XML behavior tree without extra text.[/INST]
+        RESPONSE: {fix_mistake}
+        '''     
+
+        zero_shot_learning = f'''
+        <s> <<SYS>>You are a helpful, respectful, and honest AI assistant. Your task is to generate well-structured XML code for behavior trees based on the provided instructions.<</SYS>>
+        [INST]
+        INSTRUCTIONS: Use only the following behaviors: {self.call_behaviors()} to construct behavior tree in XML format to the following command.
+        USER COMMAND: generate behavior tree to "{prompt}". Output only the XML behavior tree without extra text.[/INST]
+        RESPONSE: {fix_mistake}
+        '''        
+
+
+        if which_prompt == 1:
+            prompt_template = xml_examples
+        elif which_prompt == 2:
+            prompt_template = two_shot_learning
+        elif which_prompt == 3:
+            prompt_template = one_shot_learning
+        elif which_prompt == 4:
+            prompt_template = zero_shot_learning
+            
             
 
         print("###### prompt_template #######")
@@ -180,9 +224,19 @@ class BehaviorTreeGenerator:
         
         behavior_tree = self.extract_behavior_tree(prompt, response)
 
-        output = {f"Iterations: {self.error_count}\n\nBehavior Tree XML:\n{behavior_tree}"}
+        if behavior_tree == "Could not generate proper XML.":
+            return f"Iterations: {self.error_count}\n\nBehavior Tree XML:\n{behavior_tree}"
+        elif behavior_tree == "try again":
+            fix_mistake = f"""you generated XML behavior tree structure is incorrect: {response}.
+            Ensure that it adheres to the correct structure, starting with the "<BehaviorTree>" root tag and ending with the "</BehaviorTree>" closing root tag. User command:"{prompt}".
+            Response 2:"""
+            return self.generate_behavior_tree(prompt, fix_mistake)
+        else:
+            return f"Iterations: {self.error_count}\n\nBehavior Tree XML:\n{behavior_tree}"
+
+        # output = 
         
-        return output
+        # return output
         
 
     @staticmethod
@@ -208,20 +262,15 @@ class BehaviorTreeGenerator:
     def extract_behavior_tree(self, prompt, response):
         start_tag = "<BehaviorTree>"
         end_tag = "</BehaviorTree>"
-        start_index = response.find(start_tag) + len(start_tag)
+        start_index = response.find(start_tag)
         end_index = response.find(end_tag)
         if start_index == -1 or end_index == -1:
             if self.error_count == 4:
                 return 'Could not generate proper XML.'
-                # print('Could not generate proper XML.')
-                # exit()  
             self.error_count += 1
-            fix_mistake = f"""you generated XML behavior tree structure is incorrect: {response}.
-            Ensure that it adheres to the correct structure, starting with the "<BehaviorTree>" root tag and ending with the "</BehaviorTree>" closing root tag. User command:"{prompt}".
-            Response 2:"""
-            return self.generate_behavior_tree(prompt, fix_mistake)
-        
-        behavior_tree_xml = response[start_index:end_index].strip()
+            return "try again"
+                
+        behavior_tree_xml = response[start_index:end_index + len(end_tag)].strip()
         return behavior_tree_xml
 
 def save_behavior_tree_xml(data: str, file_path: str):
@@ -311,28 +360,26 @@ if __name__ == "__main__":
             ]   
 
 
-
     scenarios = [
         "Find the target and change color to green, then return home and change color to white.",
-        "Find food and change color to green, then return to the nest, change color to white, and freeze movement.",
+        # "Find food and change color to green, then return to the nest, change color to white, and freeze movement.",
         # "Detect an obstacle, change color to green, try to find the goal, then change color to white.",
         # "Form a line and then change color to green.",
         # "change color to green, Form a line, and change color to white.",
         # "form vertical line", 
-        # "Find Mohammed"
     ]
 
-    first_or_second_prompt_tamplet = "1"
+    which_prompt = 1
 
-    filenames = ["prompt_template_two_example.csv","prompt_template_2_two_shut_learning.csv"]
-    for filename in filenames:
+    filenames = ["xml_examples.csv","two_shot_learning_new.csv","one_shot_learning_new.csv","zero_shot_learning_new.csv"]
+    for index in range(len(filenames)):
         for prompt in scenarios:
             for model in models:
                 model_name = model[1].split("/")[-1].split(".")[0]
                 result = main(prompt, model[0],model[1])
-                write_results(prompt, result, model_name ,filename)
+                write_results(prompt, result, model_name ,filenames[index])
         
-        first_or_second_prompt_tamplet = "2"
+        which_prompt = index+1
 
 
 

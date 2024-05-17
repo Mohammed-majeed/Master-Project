@@ -49,3 +49,23 @@
         <Action>form_line</Action>
     </Selector>
 </Sequence> -->
+
+
+<!-- prompt = "Find food and change color to green, then return to the nest, change color to white, and freeze movement." -->
+<!-- <Sequence>
+    <Selector>
+        <Sequence>
+            <Condition>is_target_detected</Condition>
+            <Action>change_color_to_green</Action>
+            <Action>task_completed</Action>
+        </Sequence>
+        <Action>wander</Action>
+    </Selector>
+    <Sequence>
+        <Condition>is_agent_in_nest</Condition>
+        <Sequence>
+            <Action>change_color_to_white</Action>
+            <Action>agent_movement_freeze</Action>
+        </Sequence>
+    </Sequence>
+</Sequence> -->
