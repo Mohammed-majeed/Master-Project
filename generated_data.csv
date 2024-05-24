@@ -520,25 +520,6 @@ Returns: True if an obstacle is detected, False otherwise.'}",Coordinate search 
 </Sequence>
 </Selector>
 </BehaviorTree>"
-generate behavior tree to coordinate the delivery of packages in a busy city environment,"Use the following behaviors to construct an XML behavior tree: {'move_forward': 'Action node: Move the agent one step forward in the current direction.
-Returns: True if the agent can move forward, False otherwise.', 'turn_left': 'Action node: Turn the agent 90 degrees to the left.
-Returns: Always returns True.', 'turn_right': 'Action node: Turn the agent 90 degrees to the right.
-Returns: Always returns True.', 'deliver_package': 'Action node: Deliver a package to its designated location.
-Returns: True if the package was successfully delivered, False otherwise.', 'collect_package': 'Action node: Collect a package from a pickup location.
-Returns: True if a package was successfully collected, False otherwise.', 'avoid_obstacle': 'Action node: Take evasive action to avoid detected obstacles.
-Returns: True if the agent successfully avoided the obstacle, False otherwise.', 'is_package_available': 'Condition node: Check if there is a package available for delivery.
-Returns: True if a package is available, False otherwise.', 'is_package_collected': 'Condition node: Check if the agent is currently carrying a package.
-Returns: True if a package is being carried, False otherwise.', 'is_destination_reached': 'Condition node: Check if the agent has reached its designated delivery location.
-Returns: True if the destination is reached, False otherwise.', 'is_obstacle_detected': 'Condition node: Check if any obstacles are detected in the vicinity of the agent.
-Returns: True if an obstacle is detected, False otherwise.'}",Coordinate the delivery of packages in a busy city environment.,"
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Condition>is_package_collected</Condition>
-<Action>deliver_package</Action>
-</Selector>
-<Sequence>
-<Condition"
 "generate behavior tree to 'Collect resources, avoid obstacles, and deposit resources.'Output only the XML behavior tree without extra text.","{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}","Collect resources, avoid obstacles, and deposit resources.","
 <BehaviorTree>
 <Sequence>
@@ -564,27 +545,6 @@ Returns: True if an obstacle is detected, False otherwise.'}",Coordinate the del
 </Selector>
 </Sequence>
 </BehaviorTree>"
-"generate behavior tree to 'Search for a lost swarm member, form a group, and return to the nest.'Output only the XML behavior tree without extra text.","{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}","Search for a lost swarm member, form a group, and return to the nest.","
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Condition>is_agent_in_nest</Condition>
-<Action>change_color_to_green</Action>
-<Action>form_line</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Sequence>
-<Condition>is_line_formed</Condition>
-<Condition>is_agent_in_nest</Condition>
-<Action>task_completed</Action>
-<Action>form_line</Action>
-<Action>change_color_to_white</Action>
-</Sequence>
-<Sequence>
-<Condition>is_target_detected</Condition>
-<Condition>is_path_clear</Condition>
-<Action>avoid"
 Coordinate with other robots to create a formation and move as a single unit,"Use the following behaviors to generate XML Behavior tree based on the user command: form_formation: Action node: Move into a pre-defined formation with other robots. Returns: True if formation is successful, False otherwise. follow_leader: Action node: Follow the leader robot in the formation. Returns: True if successfully following, False otherwise. maintain_distance: Action node: Maintain a certain distance from leader robot. Returns: True if maintaining distance, False otherwise. check_formation_complete: Condition node: Check if formation is complete. Returns: True if formation is complete, False otherwise.",Coordinate with other robots to form a V-shaped formation and move as a single unit.,"
 <BehaviorTree>
 <Sequence>
@@ -678,65 +638,6 @@ generate behavior tree to 'Collaborate with other robots to efficiently gather r
 </Sequence>
 </Sequence>
 </BehaviorTree>"
-"Navigate through a maze to reach the end goal, avoiding obstacles along the way.","Using the following behaviors, construct a behavior tree in XML format to guide the robot through the maze: {'move_forward': 'Action node: Move the robot forward by one unit.
-Returns: True if the movement was successful, False if there was an obstacle in the way.', 'turn_left': 'Action node: Turn the robot to the left by 90 degrees.
-Returns: Always returns True.', 'turn_right': 'Action node: Turn the robot to the right by 90 degrees.
-Returns: Always returns True.', 'is_obstacle_present': 'Condition node: Check if there is an obstacle directly in front of the robot.
-Returns: True if an obstacle is present, False otherwise.', 'is_goal_reached': 'Condition node: Check if the robot has reached the end goal.
-Returns: True if the goal is reached, False otherwise.'}","Navigate through maze to reach the end goal, avoiding obstacles","
-<BehaviorTree>
-<Sequence>
-<Condition>is_goal_reached</Condition>
-<Selector>
-<Sequence>
-<Condition>is_obstacle_present</Condition>
-<Selector>
-<Action>turn_right</Action>
-<Action>turn_left</Action>
-</Selector>
-</Sequence>
-<Action>move_forward</Action>
-</Selector>
-</Sequence>
-</BehaviourTree>"
-"Assemble a structure using multiple swarm robots, each with a specific task in the assembly process.","Use the following behaviors to create a behavior tree in XML format for the swarm robots to assemble a structure: {'move_to_location': 'Action node: Move the robot to the specified location.
-Returns: True if the movement was successful, False otherwise.', 'rotate_part': 'Action node: Rotate the designated part in a specified direction.
-Returns: True if the rotation was successful, False otherwise.', 'attach_part': 'Action node: Attach the designated part to the structure.
-Returns: True if the attachment was successful, False otherwise.', 'is_part_attached': 'Condition node: Check if the designated part has been successfully attached to the structure.
-Returns: True if the part is attached, False otherwise.', 'is_structure_complete': 'Condition node: Check if the entire structure has been assembled.
-Returns: True if the structure is complete, False otherwise.'}",Assemble a structure using swarm robots with distinct roles in the assembly process.,"
-<BehaviorTree>
-<Sequence>
-<Condition>is_structure_complete</Condition>
-<Selector>
-<Sequence>
-<Condition>is_part_attached</Condition>
-<Action>rotate_part</Action>
-<Action>attach_part</Action>
-</Sequence>
-<Action>move_to_location</Action>
-</Selector>
-</Sequence>
-</BehaviourTree>"
-"Clean a room with multiple swarm robots, each with a specific task in the cleaning process.","Use the following behaviors to construct a behavior tree in XML format for the cleaning process: {'move_to_location': 'Action node: Move the robot to the specified location.
-Returns: True if the movement was successful, False otherwise.', 'suck_up_dirt': 'Action node: Use a suction device to remove dirt from the specified location.
-Returns: True if the dirt was successfully removed, False otherwise.', 'replace_cleaning_solution': 'Action node: Replace the cleaning solution in the robot's container.
-Returns: Always returns True.', 'is_dirt_present': 'Condition node: Check if there is dirt present at the specified location.
-Returns: True if dirt is present, False otherwise.', 'is_room_clean': 'Condition node: Check if the entire room is clean.
-Returns: True if the room is clean, False otherwise.'}","Clean a room with multiple swarm robots, each with a specific role in the cleaning process.","
-<BehaviorTree>
-<Sequence>
-<Condition>is_room_clean</Condition>
-<Selector>
-<Sequence>
-<Condition>is_dirt_present</Condition>
-<Action>suck_up_dirt</Action>
-<Action>replace_cleaning_solution</Action>
-</Sequence>
-<Action>move_to_location</Action>
-</Selector>
-</Sequence>
-</BehaviourTree>"
 generate a behavior tree for a swarm of robots to coordinate and perform a complex task,"Include the following behaviors to generate XML behavior tree for swarm robotics: {'move_to_point': 'Action node: Move the robot to a designated point in the environment.
 Returns: True if the robot reaches the point, False otherwise.', 'form_circle': 'Action node: Direct the robots to form a circle formation.
 Returns: True if the robots successfully form a circle, False otherwise', 'wait_for_command': 'Condition node: Check if the robots are waiting for a command or instruction.
@@ -2693,24 +2594,6 @@ Collect resources scattered around the environment and return them to a designat
 </Selector>
 </Sequence>
 </BehaviorTree>"
-"generate behavior tree to 'Search for an object, pick it up, and return it to the designated drop-off location.'Output only the XML behavior tree without extra text.","{'agent_movement_freeze': 'Action node: Freeze the agentï¿½s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'carry_object': 'Action node: Command the agent to pick up and carry the designated object. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentï¿½s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentï¿½s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentï¿½s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'drop_object': 'Action node: Command the agent to drop the object it is carrying. Returns: Always returns True, indicating the action was executed.', 'find_object': 'Action node: Use sensor data to locate the designated object. Returns: True if the object is detected, False otherwise.', 'is_object_carried': 'Condition node: Determine if the agent is currently carrying an object. Returns: True if the agent is carrying an object, False otherwise.', 'is_object_in_dropoff': 'Condition node: Check if the agent is in the designated drop-off location for the object. Returns: True if the agent is within 5 units of distance from the location, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target (object) is within a detectable distance from the agentï¿½s position. Returns: True if the object is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target (object). Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}","Search for an object, pick it up, and return it to the designated drop-off location.","
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Condition>is_object_carried</Condition>
-<Action>change_color_to_green</Action>
-</Sequence>
-<Selector>
-<Sequence>
-<Condition>is_object_in_dropoff</Condition>
-<Action>drop_object</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Selector>
-<Sequence>
-<Action>change_color_to_white</Action>
-<Action>find_object</"
 "Explore the environment and collect resources. If resources run low, return to base and deposit them before continuing exploration.",Use the following behaviors to generate XML Behavior tree based on the user command: explore: Action node - Represents the behavior of exploring the environment. collect_resources: Action node - Represents the behavior of collecting resources. monitor_resources: Action node - Continuously checks the level of resources. return_to_base: Action node - Makes the agent return to the base. deposit_resources: Action node - Makes the agent deposit resources at the base. is_resources_low: Condition node - Checks if the level of resources is below a specific threshold.,"Explore the environment and collect resources. If resources run low, return to base and deposit them before continuing exploration.","
 <BehaviorTree>
 <Selector>
@@ -3639,43 +3522,6 @@ Returns: True if resources are available, False otherwise.'} only. Output an XML
 </Sequence>
 </Sequence>
 </BehaviorTree>"
-"generate behavior tree to 'Search for missing team members and bring them back to the group, while avoiding any obstacles along the way.'","Use the following behaviors to generate an XML behavior tree: {'move_forward': 'Action node: Move the robot one step forward in the current direction.
-Returns: True if the robot can move forward, False otherwise.', 'turn_left': 'Action node: Turn the robot 90 degrees to the left.
-Returns: Always returns True.', 'turn_right': 'Action node: Turn the robot 90 degrees to the right.
-Returns: Always returns True.', 'search_for_teammate': 'Action node: Search the environment for any missing team members and bring them back to the group.
-Returns: True if a team member was found and brought back successfully, False otherwise.', 'return_to_group': 'Action node: Return to the group with the missing team member.
-Returns: True if the robot successfully returned to the group, False otherwise.', 'detect_obstacle': 'Condition node: Check if there is an obstacle in front of the robot.
-Returns: True if an obstacle is detected, False otherwise.', 'is_teammate_found': 'Condition node: Check if a missing team member has been found in the environment.
-Returns: True if a team member was found, False otherwise.', 'is_team_complete': 'Condition node: Check if the entire team is present and no members are missing.
-Returns: True if the team is complete, False otherwise.'} only. Output an XML behavior tree without extra text.","Search for missing team members and bring them back to the group, while avoiding any obstacles along the way.","
-<BehaviorTree>
-<Selector>
-<Sequence>
-<Condition>is_team_complete</Condition>
-<Action>task_completed</Action>
-</Sequence>
-<Sequence>
-<Selector>
-<Condition>detect_obstacle</Condition>
-<Selector>
-<Action>turn_left</Action>
-<Action>turn_right</Action>
-</Selector>
-</Selector>
-<Selector>
-<Condition>is_teammate_found</Condition>
-<Sequence>
-<Action>move_forward</Action>
-<Action>return_to_group</Action>
-</Sequence>
-</Selector>
-<Selector>
-<Condition>search_for_teammate</Condition>
-<Action>return_to_group</Action>
-</Selector>
-</Sequence>
-</Selector>
-</Behavior"
 generate behavior tree to 'Avoid obstacles while searching for and collecting objects.' Output only the XML behavior tree without extra text.,"{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}",Avoid obstacles while searching for and collecting objects.,"
 <BehaviorTree>
 <Selector>
@@ -3770,21 +3616,6 @@ Defend the central base from incoming enemy attacks while coordinating with near
 </Selector>
 </Sequence>
 </BehaviorTree>"
-"generate behavior tree to 'Collect data, avoid obstacles, and return to home base.'Output only the XML behavior tree without extra text.","{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if obstacles are detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_data_collected': 'Condition node: Check if the agent has collected data. Returns: True if data is collected, False otherwise.', 'is_homebase_reached': 'Condition node: Check if the agent has returned to home base. Returns: True if the agent is within 15 units of distance from home base, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}","Collect data, avoid obstacles, and return to home base.","
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Condition>is_data_collected</Condition>
-<Action>change_color_to_green</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Action>wander</Action>
-</Selector>
-<Selector>
-<Sequence>
-<Condition>is_obstacle_detected</Condition>
-<"
 "Navigate to a specified location using obstacle avoidance technique, while avoiding other robots in the vicinity.","{'adjust_heading_robot': 'Action node: Adjust the robotâ€™s heading based on the obstacle detection. Returns: Always returns True, indicating the action was executed.', 'avoid_other_robots': 'Action node: Execute an action to avoid other robots in the vicinity. Returns: Always returns True, indicating the action was executed.', 'detect_obstacles': 'Condition node: Determine if any obstacles are detected in the vicinity of the robot. Returns: True if an obstacle is detected, False otherwise.', 'is_location_reached': 'Condition node: Check if the robot has reached the specified location. Returns: True if the robot is within 10 units of distance from the target, False otherwise.', 'is_other_robot_detected': 'Condition node: Determine if any other robots are detected in the vicinity of the robot. Returns: True if another robot is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the robot is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'navigate_to_location': 'Action node: Navigate to a specified target location using obstacle avoidance technique. Returns: Always returns True, indicating the action was executed.', 'perform_obstacle_avoidance': 'Action node: Initiate the obstacle avoidance process by calling the necessary functions and actions. Returns: Always returns True, indicating the action was executed.', 'prevent_collision': 'Action node: Execute an action to prevent collision with other robots. Returns: Always returns True, indicating the action was executed.'}","Navigate to a specified location using obstacle avoidance technique, while avoiding other robots in the vicinity.","
 <BehaviorTree>
 <Sequence>
@@ -6282,20 +6113,6 @@ Safely navigate through a busy intersection while obeying traffic laws.,Use the 
 </Selector>
 </Sequence>
 </BehaviorTree>"
-Search and rescue a missing person in a remote location.,Use the following behaviors to generate XML Behavior tree based on the user command: explore_area: Action node - Makes the agent explore the remote location for the missing person. search_area: Action node - Makes the agent search specific areas within the location. track_scent: Action node - Makes the agent use their scent tracking abilities to locate the missing person. is_person_found: Condition node - Checks if the missing person has been located.,Search and rescue a missing person in a remote location.,"
-<BehaviorTree>
-<Sequence>
-<Action>explore_area</Action>
-<Selector>
-<Sequence>
-<Action>search_area</Action>
-<Action>track_scent</Action>
-</Sequence>
-<Condition>is_person_found</Condition>
-</Selector>
-</Sequence>
-
-<BehaviorTree>"
 Complete a complex math problem based on given data.,Use the following behaviors to generate XML Behavior tree based on the user command: analyze_data: Action node - Makes the agent analyze the given data. select_algorithm: Action node - Makes the agent select the appropriate algorithm for solving the problem based on the data. solve_problem: Action node - Makes the agent solve the math problem using the selected algorithm. is_problem_solved: Condition node - Checks if the problem has been successfully solved.,Complete a complex math problem based on given data.,"
 <BehaviorTree>
 <Sequence>
@@ -7455,19 +7272,6 @@ Navigate a swarm of robots through a complex maze to reach the designated destin
 </Selector>
 </Sequence>
 </BehaviorTree>"
-generate behavior tree to 'Survive in harsh environment by finding shelter and collecting resources.'Output only the XML behavior tree without extra text.,"{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.', 'find_shelter': 'Action node: Direct the agent to find and reach a shelter in the environment. Returns: Always returns True, indicating the action was executed.', 'collect_resources': 'Action node: Direct the agent to collect resources within the environment. Returns: Always returns True, indicating the action was executed.'}",Survive in harsh environment by finding shelter and collecting resources.,"
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Condition>is_path_clear</Condition>
-<Action>continue_movement_agent</Action>
-<Action>wander</Action>
-</Sequence>
-<Action>avoid_obstacle</Action>
-</Selector>
-<Selector>
-<Action>find_shelter</"
 "generate behavior tree to 'Search for a target, avoid obstacles, and once target is found, move towards it and perform a specific action.'Output only the XML behavior tree without extra text.","{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}","Search for a target, avoid obstacles, and once target is found, move towards it and perform a specific action.","
 <BehaviorTree>
 <Sequence>
@@ -7489,33 +7293,6 @@ generate behavior tree to 'Survive in harsh environment by finding shelter and c
 </Selector>
 </Sequence>
 </BehaviorTree>"
-generate behavior tree to 'Perform a coordinated movement in the shape of a triangle.'Output only the XML behavior tree without extra text.,"{'agent_movement_freeze': 'Action node: Freeze the agentâ€™s movement, typically to indicate a stop in activity or end of tasks. Returns: Always returns True, indicating the action was executed.', 'avoid_obstacle': 'Action node: Execute an action to avoid detected obstacles. Returns: Always returns True, indicating the action was executed.', 'change_color_to_green': 'Action node: Change the agentâ€™s color to green, usually indicating a successful operation or state. Returns: Always returns True, indicating the action was executed.', 'change_color_to_white': 'Action node: Change the agentâ€™s color to white, usually indicating a neutral or initial state. Returns: Always returns True, indicating the action was executed.', 'continue_movement_agent': 'Action node: Continue the agentâ€™s movement after it has been previously frozen. Returns: Always returns True, indicating the action was executed.', 'form_line': 'Action node: Direct the agent to form a line towards the center of the window. This function adjusts the agentâ€™s position to align it with the center. Returns: Always returns True, indicating the action was executed.', 'is_agent_in_nest': 'Condition node: Determine if the agent is in the nest. Returns: True if the agent is in the nest, False otherwise.', 'is_line_formed': 'Condition node: Determine if the agent has formed a line with a reference point at the center of the window. Returns: True if the line is formed with the center, False otherwise.', 'is_obstacle_detected': 'Condition node: Determine if any obstacles are detected in the vicinity of the agent. Returns: True if an obstacle is detected, False otherwise.', 'is_path_clear': 'Condition node: Check if the path ahead of the agent is clear of obstacles. Returns: True if no obstacles are detected ahead, False if obstacles are present.', 'is_target_detected': 'Action node: Check if the target is within a detectable distance from the agentâ€™s position. Returns: True if the target is within 20 units of distance, False otherwise.', 'is_target_reached': 'Condition node: Check if the agent has reached the target. Returns: True if the target is within 15 units of distance, False otherwise.', 'task_completed': 'Action node: Signal that the agent has completed its designated task by freezing movement and updating state. Returns: Always returns True, indicating that the task completion action was executed.', 'wander': 'Action node: Perform a wandering action where the agent moves randomly within the environment. Returns: Always returns True, indicating the action was executed.'}",Perform a coordinated movement in the shape of a triangle.,"
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Condition>is_agent_in_nest</Condition>
-<Action>change_color_to_green</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Action>wander</Action>
-</Selector>
-<Selector>
-<Sequence>
-<Condition>is_line_formed</Condition>
-<Action>change_color_to_green</Action>
-<Action>agent_movement_freeze</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Action>form_line</Action>
-</Selector>
-<Selector>
-<Sequence>
-<Condition>is_target_reached</Condition>
-<Action>change_color_to_white</Action>
-<Action>task_completed</Action>
-</Sequence>
-<Action>continue"
 generate behavior tree for a swarm of robots to efficiently collect resources in a designated area,"Use the following behaviors to generate XML Behavior tree based on the user command: {'move_to_resource': 'Action node: Move the robot towards the nearest resource in the designated area. Returns: True if the resource was successfully reached, False otherwise.', 'collect_resource': 'Action node: Collect the resource at the robot's current position. Returns: True if the resource was successfully collected, False otherwise.', 'deposit_resource': 'Action node: Deposit the collected resources at a designated collection point. Returns: True if the resources were successfully deposited, False otherwise.', 'is_resource_available': 'Condition node: Check if there are any remaining resources in the designated area. Returns: True if resources are available, False otherwise.', 'is_collection_point_reached': 'Condition node: Check if the robot has reached the designated resource collection point. Returns: True if the collection point is reached, False otherwise.'} to construct a behavior tree in XML format for the given command.",Collect resources in a designated area and deposit them at a collection point.,"
 <BehaviorTree>
 <Selector>
@@ -8777,15 +8554,6 @@ Safeguard valuable resources and prevent theft by enemies.,"Use the following be
 <Action>continue_safeguarding</Action>
 </Sequence>
 </BehaviorTree>"
-Communicate with other agents in the swarm using a designated system.,Use the following behaviors to generate XML Behavior tree based on the user command: communicate_with_team: Action node - Makes the agent use designated communication behaviors and strategies to communicate with other agents in the swarm. check_for_new_information: Condition node - Checks for any new information received from other agents. update_strategy_accordingly: Action node - Updates the agent's behavior and strategy based on the received information.,Communicate with other agents in the swarm using a designated system.,"
-<BehaviorTree>
-<Selector>
-<Sequence>
-<Action>check_for_new_information</Action>
-<Action>update_strategy_accordingly</Action>
-</Sequence>
-<Action>communicate_with_team</Action>
-</MeetByBehaviorTree>"
 Maneuver through tight spaces to reach a target location.,"Use the following behaviors to generate XML Behavior tree based on the user command: navigate_through_tight_spaces: Action node - Makes the agent use specialized behaviors and strategies to maneuver through tight spaces (e.g. crawling, squeezing). check_for_obstacles: Condition node - Checks for any obstacles in the tight space.",Maneuver through tight spaces to reach a target location.,"
 <BehaviorTree>
 <Selector>
@@ -9254,13 +9022,6 @@ Find and destroy enemy targets.,Use the following behaviors to generate XML Beha
 <Action>engage_target</Action>
 </Selector>
 </BehaviorTree>"
-Work together to defend against a common threat.,Use the following behaviors to generate XML Behavior tree based on the user command: locate_threat: Action node - Moves the agent to the designated threat location. coordinate_defense: Action node - Coordinates with other agents to defend against the threat. defend_against_threat: Action node - Performs a coordinated defense against the threat. protect_all: Subtree node - Represents a behavior tree for protecting against a common threat.,Work together to defend against a common threat.,"
-<BehaviorTree>
-<Selector>
-<Sequence>
-<Action>locate_threat</Action>
-<Action>coordinate_defense</Action>
-<Action>defend_against_threat</Action>"
 "If the battery is low, go to the charging station. Otherwise, continue to explore the environment.",Use the following behaviors to generate XML Behavior tree based on the user command: is_battery_low: Condition node - Checks if the battery level is below a specified threshold. go_to_charging_station: Action node - Makes the agent navigate to the nearest charging station. explore_environment: Action node (same as before).,"If the battery is low, go to the charging station. Otherwise, continue to explore the environment.","
 <BehaviorTree>
 <Selector>
@@ -9861,12 +9622,6 @@ Returns: Always returns True, indicating the action was executed.'} to construct
 <Action>retrieve_supplies</Action>
 </Sequence>
 </BehaviorTree>"
-generate behavior tree to 'Navigate through a maze and retrieve designated artifacts.',"Use only the following behaviors to generate XML Behavior tree based on the user command: {navigate_maze: 'Action node: Use predefined strategies to navigate through the maze.
-Returns: Always returns True, indicating the action was executed.', retrieve_artifact: 'Action node: Retrieve the designated artifacts once reaching the end of the maze.
-Returns: Always returns True, indicating the action was executed.'} to construct a behavior tree in XML format to the following command.",Navigate through a maze and retrieve designated artifacts.,"
-<BehaviorTree>
-<Sequence>
-<"
 Detect and collect all nearby resources.,Use the following behaviors to generate XML Behavior tree based on the user command: detect_resources: Action node - Scans the surroundings for resources. collect_resource: Action Node - Collects a resource if one is detected. check_inventory: Condition node - Checks if the robot's inventory is full. stop_collecting: Action node - Halts the collection process if the inventory is full.,Detect and collect all nearby resources.,"
 <BehaviorTree>
 <Sequence>
@@ -10071,22 +9826,6 @@ Create a communication network with other robots for data transfer.,Use the foll
 </Selector>
 </Sequence>
 </BehaviorTree>"
-Team up with other robots to construct a large structure.,Use the following behaviors to generate XML Behavior tree based on the user command: detect_blueprint: Action node - Scans the surroundings for a blueprint of the structure. move_to_blueprint: Action node - Moves towards the blueprint. gather_materials: Action node - Collects the necessary materials for construction. build_structure: Action node - Constructs the structure in coordination with other robots. check_completion: Condition node - Checks if the structure has been completed.,Team up with other robots to construct a large structure.,"
-<BehaviorTree>
-<Sequence>
-<Action>detect_blueprint</Action>
-<Sequence>
-<Action>move_to_blueprint</Action>
-<Selector>
-<Selector>
-<Condition>check_completion</Condition>
-<Action>build_structure</Action>
-</Selector>
-</Selector>
-</Sequence>
-<Action>gather_materials</Action>
-</Sequence>
-</Behavior"
 Patrol designated area and scan for any changes.,Use the following behaviors to generate XML Behavior tree based on the user command: patrol: Action node - Moves the agent around a designated area. scan: Action node - Scans the environment for changes.,Patrol designated area and scan for any changes.,"
 <BehaviorTree>
 <Sequence>
@@ -10661,12 +10400,6 @@ Rest and recharge batteries before continuing with tasks.,Use the following beha
 </Selector>
 </Sequence>
 </BehaviorTree>"
-"Search and rescue a lost team member. If unable to locate within a certain timeframe, call for backup.",Use the following behaviors to generate XML Behavior tree based on the user command: search_and_rescue: Subtree node (same as before). call_for_backup: Action node (same as before). unable_to_locate: Condition node (same as before).,"Search and rescue a lost team member. If unable to locate within a certain timeframe, call for backup.","
-<BehaviorTree>
-<Sequence>
-<Selector>
-<Sequence>
-<Action>search_and_rescue"
 "If the obstacle is within a certain proximity, avoid it. Otherwise, continue straight.",Use the following behaviors to generate XML Behavior tree based on the user command: avoid_obstacle: Action node - Makes the agent move around the obstacle. is_obstacle_close: Condition node - Checks if the obstacle is within the designated proximity.,"If the obstacle is within a certain proximity, avoid it. Otherwise, continue straight.","
 <BehaviorTree>
 <Selector>
@@ -11896,22 +11629,6 @@ Utilize swarm intelligence to search for and repair a damaged area.,Use the foll
 </Selector>
 </Sequence>
 </BehaviorTree>"
-Use swarm coordination to push a large object off a designated platform.,Use the following behaviors to generate XML Behavior tree based on the user command: push_object: Subtree node - Represents a behavior tree for using swarm coordination to push a large object off a designated platform. move_closer: Action node - Makes the agent move closer to the designated platform. is_object_on_platform: Condition node - Checks if the large object is on the designated platform.,Use swarm coordination to push a large object off a designated platform.,"
-<BehaviorTree>
-<Sequence>
-<Action>push_object</Action>
-<Selector>
-<Sequence>
-<Condition>is_object_on_platform</Condition>
-<Action>move_c"
-Avoid other swarm robots while completing the assigned task.,Use the following behaviors to generate XML Behavior tree based on the user command: avoid_other_robots: Condition node - Checks if other robots are within a specified distance. move_away: Action node - Moves the agent away from other robots. complete_task: Action node - Performs the assigned task.,Avoid other swarm robots while completing the assigned task.,"
-<BehaviorTree>
-<Sequence>
-<Condition>avoid_other_robots</Condition>
-<Action>move_away</Action>
-</Sequence>
-<Action>complete_task</Action>
-</Sequence>"
 "Follow the leader swarm robot, but stop if the leader stops for more than 5 seconds.",Use the following behaviors to generate XML Behavior tree based on the user command: follow_leader: Action node - Makes the agent follow another robot. leader_stopped: Condition node - Checks if the leader has stopped moving. stop: Action node - Stops the agent's movement. wait: Action node - Waits for a specified amount of time. restart_movement: Action node - Restarts the agent's movement after waiting.,"Follow the leader swarm robot, but stop if the leader stops for more than 5 seconds.","
 <BehaviorTree>
 <Selector>
@@ -13327,7 +13044,3 @@ Develop a behavior tree to coordinate swarm robots to effectively track and herd
 </Selector>
 </Sequence>
 </BehaviorTree>"
-Create a behavior tree to coordinate swarm robots to efficiently perform maintenance work on a large-scale structure.,Use the following behaviors to generate XML Behavior tree based on the user command: perform_maintenance: Action node - Use specialized tools to perform maintenance work on the designated areas of the structure. check_maintenance_complete: Condition node - Check if the maintenance work has been successfully completed. move_to_next_maintenance_site: Action node - Move to the next designated maintenance site.,Perform maintenance work on a large-scale structure.,"
-<BehaviorTree>
-<Sequence>
-<Condition>not maintenance"
